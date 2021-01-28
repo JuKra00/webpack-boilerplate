@@ -3,16 +3,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const postcssNormalize = require('postcss-normalize')
 const common = require('./webpack.common.js')
-const paths = require('./paths')
 
 module.exports = merge(common, {
   mode: 'production',
   devtool: false,
-  output: {
-    path: paths.build,
-    publicPath: '/assets/',
-    filename: 'js/[name].js',
-  },
   module: {
     rules: [
       {

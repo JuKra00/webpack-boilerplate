@@ -1,8 +1,10 @@
-const webpack = require('webpack')
 const { merge } = require('webpack-merge')
+
 const postcssNormalize = require('postcss-normalize')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const common = require('./webpack.common.js')
+const paths = require('./paths')
 
 module.exports = merge(common, {
   // Set the mode to development or production
@@ -11,13 +13,19 @@ module.exports = merge(common, {
   // Control how source maps are generated
   devtool: 'inline-source-map',
 
+  output: {
+    path: paths.dev,
+    filename: '[name].js',
+    publicPath: '/assets/',
+  },
+
   module: {
     rules: [
       // Styles: Inject CSS into the head with source maps
       {
         test: /\.(scss|css)$/,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: { sourceMap: true, importLoaders: 1, modules: false },
@@ -38,8 +46,11 @@ module.exports = merge(common, {
   },
 
   plugins: [
-    // Only update what has changed on hot reload
-    new webpack.HotModuleReplacementPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: '[id].css',
+    }),
+
     // Analyze bundle sizes
     new BundleAnalyzerPlugin(),
   ],
